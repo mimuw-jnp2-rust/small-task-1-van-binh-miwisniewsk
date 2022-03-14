@@ -21,35 +21,60 @@ impl Dish {
 const TAKEAWAY_FEE: u32 = 1;
 
 #[derive(Debug, Clone)]
-struct Order; // TODO
+struct Order {
+    // czy tu powinny być te mut?
+
+    // lista dań
+    dishes: Vec<Dish>,
+    // czy na wynos?
+    is_takeaway: bool,
+    // liczba dań
+    count: u32,
+    // cena
+    price: u32,
+}
 
 impl Order {
     fn new() -> Order {
-        todo!()
+        Order {
+            dishes: Vec::new(),
+            is_takeaway: false,
+            count: 0,
+            price: 0,
+        }
     }
 
     fn add_dish(&mut self, dish: Dish) {
-        todo!()
+        self.dishes.push(dish);
+        self.count += 1;
+        self.price += dish.price();
     }
 
     fn set_takeaway(&mut self) {
-        todo!()
+        self.is_takeaway = true;
     }
 
     fn dish_count(&self, dish: Dish) -> u32 {
-        todo!()
+        let mut x: u32 = 0;
+        for y in &self.dishes {
+            if y == &dish {
+                x += 1;
+            }
+        }
+
+        x
     }
 
     fn items_count(&self) -> u32 {
-        todo!()
+        self.count
     }
 
     fn is_takeaway(&self) -> bool {
-        todo!()
+        self.is_takeaway
     }
 
     fn total(&self) -> u32 {
-        let sum = todo!();
+        let sum = self.price;
 
         if self.is_takeaway() {
             sum + self.items_count() * TAKEAWAY_FEE
@@ -58,6 +83,7 @@ impl Order {
         }
     }
 }
+
 
 impl Display for Order {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -77,18 +103,34 @@ struct Customer {
     favorite_order: Order,
 }
 
-struct VanBinh {
+impl Customer {
+    fn new(name: String, favorite_order: Order) -> Customer {
+        Customer {
+            name,
+            favorite_order,
+        }
+    }
+
+    fn get_favorite_order(&self) -> Order {
+        self.favorite_order.clone()
+    }
+} 
+
+struct KimLoan {
     orders_count: u32,
     customers: Vec<Customer>,
 }
 
-impl VanBinh {
-    pub fn new() -> VanBinh {
-        todo!()
+impl KimLoan {
+    pub fn new() -> KimLoan {
+        KimLoan {
+            orders_count: 0,
+            customers: Vec::new(),
+        }
     }
 
     fn add_customer(&mut self, name: String, favorite_order: Order) {
-        todo!()
+        self.customers.push(Customer::new(name, favorite_order));
     }
 
     fn get_saved_customer(&self, name: &str) -> Option<&Customer> {
@@ -96,11 +138,11 @@ impl VanBinh {
     }
 
     fn increase_orders_count(&mut self) {
-        todo!()
+        self.orders_count += 1;
     }
 
     fn get_orders_count(&self) -> u32 {
-        todo!()
+        self.orders_count
     }
 }
 
@@ -142,20 +184,20 @@ fn get_order() -> Order {
 }
 
 fn main() {
-    let mut van_binh = VanBinh::new();
+    let mut kim_loan = KimLoan::new();
 
     loop {
-        println!("Hi! Welcome to Van Binh! What's your name?");
+        println!("Hi! Welcome to Kim Loan! What's your name?");
         let name = get_line();
 
         if name.is_empty() {
             break;
         }
 
-        let order = if let Some(customer) = van_binh.get_saved_customer(&name) {
+        let order = if let Some(customer) = kim_loan.get_saved_customer(&name) {
             println!("Welcome back, {}!", customer.name);
             if yes_no("Same as usual?") {
-                todo!() // use customer's favorite order
+                customer.get_favorite_order()
             } else {
                 get_order()
             }
@@ -163,21 +205,22 @@ fn main() {
             println!("Welcome, {}!", name);
             let order = get_order();
             if yes_no("Would you like to save this order?") {
-                todo!() // save customer's favorite order in van_binh struct
+                kim_loan.add_customer(name, order.clone());
             }
             order
         };
 
-        todo!(); // Check if the order is empty
-        println!("Your order is empty!");
-
-        println!("This is order no. {}", van_binh.get_orders_count());
-        println!(
-            "There you go: {}, it's going to be {} zł",
-            order,
-            order.total()
-        );
-        van_binh.increase_orders_count();
+        if order.items_count() == 0 {
+            println!("Your order is empty!");
+        } else {
+            kim_loan.increase_orders_count();
+            println!("This is order no. {}", kim_loan.get_orders_count());
+            println!(
+                "There you go: {}, it's going to be {} zł",
+                order,
+                order.total()
+            );
+        }
     }
     println!("Bye!");
 }
