@@ -76,7 +76,6 @@ impl Order {
             sum
         }
     }
-    
 }
 
 impl Display for Order {
