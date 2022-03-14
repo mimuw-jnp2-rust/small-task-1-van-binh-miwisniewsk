@@ -76,8 +76,8 @@ impl Order {
             sum
         }
     }
+    
 }
-
 
 impl Display for Order {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -108,7 +108,7 @@ impl Customer {
     fn get_favorite_order(&self) -> Order {
         self.favorite_order.clone()
     }
-} 
+}
 
 struct KimLoan {
     orders_count: u32,
