@@ -22,15 +22,9 @@ const TAKEAWAY_FEE: u32 = 1;
 
 #[derive(Debug, Clone)]
 struct Order {
-    // czy tu powinny być te mut?
-
-    // lista dań
     dishes: Vec<Dish>,
-    // czy na wynos?
     is_takeaway: bool,
-    // liczba dań
     count: u32,
-    // cena
     price: u32,
 }
 
